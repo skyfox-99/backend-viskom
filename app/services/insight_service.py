@@ -47,7 +47,7 @@ async def generate_waste_insight(detected_classes: list) -> dict:
 
     # 2. PROMPT SUPER KETAT: Memaksa fokus 100% pada benda target
     prompt = f"""
-    TUGAS UTAMAMU ADALAH MEMBERIKAN EDUKASI TENTANG BENDA BERIKUT: "{item_names_str}".
+    kamu adalah seorang pakar tentang ilmu lingkungan, sistem mendeteksi sebuah sampah plastik: "{item_names_str}".
     
     Konteks Spesifik Benda:
     {waste_context}
