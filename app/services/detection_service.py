@@ -5,6 +5,8 @@ import uuid
 from fastapi import UploadFile
 from ultralytics import YOLO
 
+from app.utils.waste_dictionary import WASTE_DICTIONARY
+
 MODEL_PATH = "app/models/best.pt" 
 UPLOAD_DIR = "app/static/uploads"
 
@@ -32,17 +34,20 @@ async def process_image_and_detect(file: UploadFile):
         detected_class_names = [] # Kumpulkan untuk mempermudah frontend
 
         for box in result.boxes:
-            class_id = int(box.cls[0].item())
-            class_name = model.names[class_id]
-            confidence = round(box.conf[0].item(), 2)
+            class_name = model.names[int(box.cls[0].item())]
             
-            coords = box.xyxy[0].tolist() 
-            coords = [round(x, 2) for x in coords]
-
+            # Ambil data dari kamus lokal backend
+            dict_info = WASTE_DICTIONARY.get(class_name, {})
+            
             detections.append({
                 "class_name": class_name,
-                "confidence": confidence,
-                "bounding_box": coords
+                "confidence": round(box.conf[0].item(), 2),
+                "bounding_box": box.xyxy[0].tolist(),
+                # Sisipkan data kamus ke dalam deteksi
+                "nama_sampah": dict_info.get("nama", class_name),
+                "kategori": dict_info.get("kategori", "Unknown"),
+                "cara_buang": dict_info.get("action", "Tidak ada panduan"),
+                "dampak": dict_info.get("konteks", "")
             })
             
             # Masukkan ke array datar agar frontend mudah mengirimkannya kembali
