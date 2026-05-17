@@ -4,19 +4,19 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 from app.routes import detection_route
 
-app = FastAPI(title="API Deteksi Gambar")
+app = FastAPI(title="EcoVision API Deteksi Gambar")
 
+# Menggunakan "*" agar fitur html2canvas (export gambar) tidak diblokir oleh CORS
 origins = [
-    # Akses Lokal (Development)   
-    "http://localhost:5173",      # Jika frontend pakai Vite (Vue/React modern)
+    "http://localhost:5173",      
     "http://127.0.0.1:5173",
+    "*" 
 ]
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,            
     allow_credentials=True,           
-    # PENTING: Tambahkan "OPTIONS" agar browser bisa melakukan preflight check
     allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],              
     allow_headers=[
         "Content-Type",
@@ -25,19 +25,16 @@ app.add_middleware(
         "X-Requested-With",
         "X-CSRF-Token"       
     ],
-    # PENTING: max_age dimasukkan ke dalam sini, bukan menggantung di luar
     max_age=600, 
 )
 
-# Pastikan path absolut/relatif sesuai
-os.makedirs("app/static/uploads", exist_ok=True)
-
-# Membuka folder 'static' agar gambar bisa diakses melalui URL browser
-app.mount("/static", StaticFiles(directory="app/static"), name="static")
-
-# Daftarkan router dari detection_route.py
+# Hanya menyambungkan rute deteksi (YOLO + Gemini API)
 app.include_router(detection_route.router, prefix="/api", tags=["Detection"])
+
+# Memastikan folder upload ada, lalu membuka folder static ke publik
+os.makedirs("app/static/uploads", exist_ok=True)
+app.mount("/static", StaticFiles(directory="app/static"), name="static")
 
 @app.get("/")
 def read_root():
-    return {"message": "Server FastAPI berjalan dengan lancar!"}
+    return {"message": "Server FastAPI EcoVision berjalan dengan lancar!"}
