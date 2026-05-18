@@ -27,7 +27,7 @@ async def process_image_and_detect(file: UploadFile):
         nparr = np.frombuffer(contents, np.uint8)
         img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
 
-        results = model.predict(img, conf=0.25, imgsz=640) 
+        results = model.predict(img, conf=0.50, imgsz=640) 
         result = results[0]
 
         detections = []

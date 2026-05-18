@@ -9,3 +9,4 @@ python-dotenv==1.2.2
 python_jose==3.5.0
 sqlmodel==0.0.38
 ultralytics==8.4.50
+uvicorn
