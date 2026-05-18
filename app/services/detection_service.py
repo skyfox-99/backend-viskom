@@ -50,7 +50,6 @@ async def process_image_and_detect(file: UploadFile):
                 "dampak": dict_info.get("konteks", "")
             })
             
-            # Masukkan ke array datar agar frontend mudah mengirimkannya kembali
             if class_name not in detected_class_names:
                 detected_class_names.append(class_name)
 
