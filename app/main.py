@@ -7,26 +7,19 @@ from app.routes import detection_route
 app = FastAPI(title="EcoVision API Deteksi Gambar")
 
 # Menggunakan "*" agar fitur html2canvas (export gambar) tidak diblokir oleh CORS
+# Solusi A: Tembak spesifik (Sangat direkomendasikan & Aman)
 origins = [
     "http://localhost:5173",      
     "http://127.0.0.1:5173",
-    "https://frontend-ecovision.vercel.app/"
-    "*" 
+    "https://frontend-ecovision.vercel.app" # Hapus garis miring di ujung, pastikan ada koma
 ]
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,            
-    allow_credentials=True,           
-    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],              
-    allow_headers=[
-        "Content-Type",
-        "Authorization",     
-        "Accept",
-        "X-Requested-With",
-        "X-CSRF-Token"       
-    ],
-    max_age=600, 
+    allow_origins=origins, # atau ["*"] jika pakai Solusi B     
+    allow_credentials=True if "*" not in origins else False, # Credentials tidak boleh True jika pakai "*"
+    allow_methods=["*"], # Buka semua method biar fleksibel
+    allow_headers=["*"], # Buka semua header biar aman
 )
 
 # Hanya menyambungkan rute deteksi (YOLO + Gemini API)
