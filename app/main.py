@@ -10,7 +10,7 @@ app = FastAPI(title="EcoVision API Deteksi Gambar")
 origins = [
     "http://localhost:5173",      
     "http://127.0.0.1:5173",
-    "https://frontend-ecovision.vercel.app/"
+    "https://frontend-ecovision.vercel.app"
     "*" 
 ]
 
