@@ -26,4 +26,4 @@ RUN pip install opencv-python-headless==4.13.0.92
 COPY . .
 
 # 7. Jalankan FastAPI dengan port dinamis dari Railway
-CMD ["sh", "-c", "uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}"]
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]

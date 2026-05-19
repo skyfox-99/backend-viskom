@@ -7,7 +7,7 @@ from ultralytics import YOLO
 
 from app.utils.waste_dictionary import WASTE_DICTIONARY
 
-MODEL_PATH = "app/models/best.pt" 
+MODEL_PATH = "app/models/best_model.pt" 
 UPLOAD_DIR = "app/static/uploads"
 
 os.makedirs(UPLOAD_DIR, exist_ok=True)
@@ -52,6 +52,16 @@ async def process_image_and_detect(file: UploadFile):
             
             if class_name not in detected_class_names:
                 detected_class_names.append(class_name)
+
+            if not detections:
+                return {
+                    "status": "not_found",
+                    "message": "Gambar tidak terdeteksi sebagai sampah plastik yang dikenali.",
+                    "detections": [],
+                    "detected_class_names": []
+                }
+            
+            
 
         img_with_boxes = result.plot()
         filename = f"scan_{uuid.uuid4().hex}.jpg"
