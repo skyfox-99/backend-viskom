@@ -31,7 +31,7 @@ async def process_image_and_detect(file: UploadFile):
         result = results[0]
 
         detections = []
-        detected_class_names = [] # Kumpulkan untuk mempermudah frontend
+        detected_class_names = []
 
         for box in result.boxes:
             class_name = model.names[int(box.cls[0].item())]
@@ -39,24 +39,23 @@ async def process_image_and_detect(file: UploadFile):
             dict_info = WASTE_DICTIONARY.get(class_name, {})
             
             detections.append({
-                "class_name": class_name,
+                "className": class_name,
                 "confidence": round(box.conf[0].item(), 2),
-                "bounding_box": box.xyxy[0].tolist(),
-                "nama_sampah": dict_info.get("nama", class_name),
-                "kategori": dict_info.get("kategori", "Unknown"),
-                "cara_buang": dict_info.get("action", "Tidak ada panduan"),
-                "dampak": dict_info.get("konteks", "")
+                "box": box.xyxyn[0].tolist(),
+                "label": dict_info.get("nama", class_name),
+                "category": dict_info.get("kategori", "Unknown"),
+                "action": dict_info.get("action", "Tidak ada panduan"),
+                "impact": dict_info.get("konteks", "")
             })
             
             if class_name not in detected_class_names:
                 detected_class_names.append(class_name)
 
-        # PASTIKAN BAGIAN INI SEJAJAR DENGAN 'for', BUKAN DI DALAMNYA!
         if not detections:
             return {
                 "status": "not_found",
                 "message": "Gambar tidak terdeteksi sebagai sampah plastik yang dikenali.",
-                "detections": [],
+                "allDetections": [],
                 "detected_class_names": []
             }
             
@@ -70,9 +69,9 @@ async def process_image_and_detect(file: UploadFile):
             "message": "Deteksi selesai",
             "file_name": filename,
             "image_url": f"/static/uploads/{filename}",
-            "total_detected": len(detections),
-            "detected_class_names": detected_class_names, # Ini yang akan dikirim ke route /insight
-            "detections": detections
+            "totalDetected": len(detections),
+            "detected_class_names": detected_class_names, 
+            "allDetections": detections
         }
 
     except Exception as e:
