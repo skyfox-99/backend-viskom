@@ -3,8 +3,10 @@ from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 from app.routes import detection_route
+from app.routes import detection_route, bank_sampah_route
 
 app = FastAPI(title="EcoVision API Deteksi Gambar")
+
 
 # Menggunakan "*" agar fitur html2canvas (export gambar) tidak diblokir oleh CORS
 # Solusi A: Tembak spesifik (Sangat direkomendasikan & Aman)
@@ -24,6 +26,7 @@ app.add_middleware(
 
 # Hanya menyambungkan rute deteksi (YOLO + Gemini API)
 app.include_router(detection_route.router, prefix="/api", tags=["Detection"])
+app.include_router(bank_sampah_route.router, prefix="/api", tags=["Bank Sampah"])
 
 # Memastikan folder upload ada, lalu membuka folder static ke publik
 os.makedirs("app/static/uploads", exist_ok=True)
