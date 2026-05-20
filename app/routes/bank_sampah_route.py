@@ -7,6 +7,7 @@ router = APIRouter()
 # Path menuju file json
 JSON_PATH = "app/utils/bank_sampah.json"
 
+# route untuk mendapatkan semua data bank sampah
 @router.get("/bank-sampah")
 def get_all_bank_sampah():
     if not os.path.exists(JSON_PATH):
