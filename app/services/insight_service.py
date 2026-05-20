@@ -77,18 +77,28 @@ async def generate_waste_insight(detected_classes: list) -> dict:
     """
 
     try:
-        # 4. Pemanggilan Model dengan Sintaks SDK Baru
         response = client.models.generate_content(
             model='gemini-2.5-flash',
             contents=prompt,
-            # Menggunakan types.GenerateContentConfig pada SDK baru
             config=types.GenerateContentConfig(
                 response_mime_type="application/json",
-                temperature=0.1,  # Mengunci imajinasi AI agar patuh pada prompt & kamus
+                temperature=0.1, 
             ),
         )
         
-        ai_result = json.loads(response.text)
+        # 🔥 TAMBAHAN BARU: Pembersih Markdown JSON
+        raw_text = response.text.strip()
+        
+        # Kalau Gemini masih ngirim awalan ```json, kita potong paksa
+        if raw_text.startswith("```json"):
+            raw_text = raw_text.replace("```json", "", 1)
+        if raw_text.startswith("```"):
+            raw_text = raw_text.replace("```", "", 1)
+        if raw_text.endswith("```"):
+            # Hapus 3 karakter terakhir (```)
+            raw_text = raw_text[:-3].strip()
+            
+        ai_result = json.loads(raw_text)
         return ai_result
         
     except Exception as e:
